@@ -4,8 +4,10 @@ import NewsCard from '../components/NewsCard';
 import Filters from '../components/Filters';
 import { newsAPI } from '../services/api';
 import { FaSearch, FaCalendar, FaFilter, FaDatabase } from 'react-icons/fa';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Search() {
+  const { isDarkMode } = useTheme();
   const location = useLocation();
   const [searchInput, setSearchInput] = useState(location.state?.keyword || '');
   const [articles, setArticles] = useState([]);
@@ -65,11 +67,15 @@ export default function Search() {
   };
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
+    <div className={`p-4 max-w-6xl mx-auto min-h-screen transition-colors duration-300 ${
+      isDarkMode ? 'bg-gray-900' : 'bg-gray-50'
+    }`}>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Search News</h1>
-        <p className="text-gray-500 dark:text-gray-400">
+        <h1 className={`text-3xl font-bold mb-2 ${
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        }`}>Search News</h1>
+        <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
           Find news articles by entering any word, phrase, paragraph, or category below.
         </p>
       </div>
@@ -81,7 +87,11 @@ export default function Search() {
           value={searchInput}
           onChange={handleInputChange}
           placeholder="Type any word, phrase, paragraph, or category..."
-          className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-lg"
+          className={`flex-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 text-lg transition-colors ${
+            isDarkMode 
+              ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' 
+              : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+          }`}
         />
         <button
           type="submit"
@@ -94,7 +104,11 @@ export default function Search() {
         <button
           type="button"
           onClick={clearResults}
-          className="px-4 py-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-lg"
+          className={`px-4 py-3 text-lg transition-colors ${
+            isDarkMode 
+              ? 'text-gray-400 hover:text-gray-300' 
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
         >
           Clear
         </button>
@@ -105,21 +119,35 @@ export default function Search() {
         {loading && (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500 mx-auto"></div>
-            <p className="mt-2 text-gray-400">Searching...</p>
+            <p className={`mt-2 ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>Searching...</p>
           </div>
         )}
 
         {error && (
-          <div className="bg-red-900 border border-red-700 rounded-lg p-4 mb-4">
-            <p className="text-red-200">Error: {error}</p>
+          <div className={`border rounded-lg p-4 mb-4 ${
+            isDarkMode 
+              ? 'bg-red-900 border-red-700 text-red-200' 
+              : 'bg-red-50 border-red-200 text-red-800'
+          }`}>
+            <p>Error: {error}</p>
           </div>
         )}
 
         {!loading && !error && articles.length > 0 && (
           <div>
-            <div className="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-700 rounded-lg">
-              <h3 className="font-semibold text-green-700 dark:text-green-200 mb-2">Search Results</h3>
-              <p className="text-green-700 dark:text-green-100 text-sm">
+            <div className={`mb-4 p-4 border rounded-lg ${
+              isDarkMode 
+                ? 'bg-green-900 border-green-700' 
+                : 'bg-green-50 border-green-200'
+            }`}>
+              <h3 className={`font-semibold mb-2 ${
+                isDarkMode ? 'text-green-200' : 'text-green-800'
+              }`}>Search Results</h3>
+              <p className={`text-sm ${
+                isDarkMode ? 'text-green-100' : 'text-green-700'
+              }`}>
                 Found {articles.length} articles matching your search.
               </p>
             </div>
@@ -137,9 +165,13 @@ export default function Search() {
 
         {!loading && !error && articles.length === 0 && (
           <div className="text-center py-8">
-            <FaSearch className="text-4xl text-gray-400 dark:text-gray-600 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">No Results Found</h3>
-            <p className="text-gray-500 dark:text-gray-400">
+            <FaSearch className={`text-4xl mx-auto mb-4 ${
+              isDarkMode ? 'text-gray-600' : 'text-gray-400'
+            }`} />
+            <h3 className={`text-lg font-semibold mb-2 ${
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}>No Results Found</h3>
+            <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
               Try a different word, phrase, or category.
             </p>
           </div>
@@ -148,9 +180,15 @@ export default function Search() {
 
       {/* Search Stats */}
       {!loading && !error && articles.length > 0 && (
-        <div className="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-          <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">Search Summary</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-700 dark:text-gray-300">
+        <div className={`mt-8 p-4 rounded-lg ${
+          isDarkMode ? 'bg-gray-800' : 'bg-gray-100'
+        }`}>
+          <h3 className={`font-semibold mb-2 ${
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          }`}>Search Summary</h3>
+          <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 text-sm ${
+            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+          }`}>
             <div>
               <span className="font-medium">Results:</span> {articles.length}
             </div>

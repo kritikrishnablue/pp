@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { FaArrowLeft, FaBookmark, FaShare, FaGlobe, FaExternalLinkAlt, FaThumbsUp, FaPlay, FaImage } from 'react-icons/fa';
 import RelatedArticles from './RelatedArticles';
+import { useTheme } from '../context/ThemeContext';
 
 export default function ArticleSummary({ article, onClose, onBookmark, onShare }) {
+  const { isDarkMode } = useTheme();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
@@ -70,13 +72,25 @@ export default function ArticleSummary({ article, onClose, onBookmark, onShare }
   const imageUrl = getImageUrl();
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 dark:bg-gray-900 bg-white text-white dark:text-white text-gray-900 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div className={`fixed inset-0 flex items-center justify-center z-50 p-4 ${
+      isDarkMode ? 'bg-black/50' : 'bg-black/30'
+    }`}>
+      <div className={`rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto transition-colors duration-300 ${
+        isDarkMode 
+          ? 'bg-gray-900 text-white' 
+          : 'bg-white text-gray-900'
+      }`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700 dark:border-gray-700 border-gray-200">
+        <div className={`flex items-center justify-between p-6 border-b ${
+          isDarkMode ? 'border-gray-700' : 'border-gray-200'
+        }`}>
           <button
             onClick={onClose}
-            className="flex items-center gap-2 text-gray-300 dark:text-gray-300 text-gray-700 hover:text-white dark:hover:text-white hover:text-gray-900 transition-colors"
+            className={`flex items-center gap-2 transition-colors ${
+              isDarkMode 
+                ? 'text-gray-300 hover:text-white' 
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
           >
             <FaArrowLeft className="text-sm" />
             Back to News
@@ -85,16 +99,22 @@ export default function ArticleSummary({ article, onClose, onBookmark, onShare }
             <button
               onClick={handleBookmark}
               className={`p-2 rounded-full transition-colors ${
-                isBookmarked 
+                isBookmarked
                   ? 'bg-cyan-500 text-white' 
-                  : 'text-gray-300 dark:text-gray-300 text-gray-700 hover:text-white dark:hover:text-white hover:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-700'
+                  : isDarkMode 
+                    ? 'text-gray-300 hover:text-white hover:bg-gray-700' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               <FaBookmark className="text-sm" />
             </button>
             <button
               onClick={handleShare}
-              className="p-2 rounded-full text-gray-300 dark:text-gray-300 text-gray-700 hover:text-white dark:hover:text-white hover:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-700 transition-colors"
+              className={`p-2 rounded-full transition-colors ${
+                isDarkMode 
+                  ? 'text-gray-300 hover:text-white hover:bg-gray-700' 
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+              }`}
             >
               <FaShare className="text-sm" />
             </button>
@@ -110,9 +130,11 @@ export default function ArticleSummary({ article, onClose, onBookmark, onShare }
                 className={`px-3 py-1 rounded-full text-xs font-medium ${
                   index === 0 
                     ? 'bg-cyan-500 text-white' 
-                    : tag === 'Video'
-                    ? 'bg-red-500 text-white'
-                    : 'bg-gray-700 dark:bg-gray-700 bg-gray-200 text-gray-300 dark:text-gray-300 text-gray-700'
+                    : tag === 'Video' 
+                      ? 'bg-red-500 text-white'
+                      : isDarkMode 
+                        ? 'bg-gray-700 text-gray-300' 
+                        : 'bg-gray-200 text-gray-700'
                 }`}
               >
                 {index === 0 ? tag : tag === 'Video' ? `▶ ${tag}` : `◆ ${tag}`}
@@ -123,24 +145,34 @@ export default function ArticleSummary({ article, onClose, onBookmark, onShare }
 
         {/* Article Title */}
         <div className="px-6 py-4">
-          <h1 className="text-2xl font-bold text-white dark:text-white text-gray-900 mb-4">
+          <h1 className={`text-2xl font-bold mb-4 ${
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          }`}>
             {article.title}
           </h1>
         </div>
 
         {/* Article Meta */}
-        <div className="px-6 py-4 border-b border-gray-700 dark:border-gray-700 border-gray-200">
+        <div className={`px-6 py-4 border-b ${
+          isDarkMode ? 'border-gray-700' : 'border-gray-200'
+        }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-sm">C</span>
               </div>
               <div>
-                <p className="text-white dark:text-white text-gray-900 font-medium">{article.source?.name || article.source || 'News Source'}</p>
-                <p className="text-gray-400 dark:text-gray-400 text-gray-600 text-sm">By {article.author || 'Unknown Author'}</p>
+                <p className={`font-medium ${
+                  isDarkMode ? 'text-white' : 'text-gray-900'
+                }`}>{article.source?.name || article.source || 'News Source'}</p>
+                <p className={`text-sm ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>By {article.author || 'Unknown Author'}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-gray-400 dark:text-gray-400 text-gray-600 text-sm">
+            <div className={`flex items-center gap-4 text-sm ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>
               <span className="flex items-center gap-1">
                 <span>📅</span>
                 {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : 'Unknown date'}
@@ -171,7 +203,9 @@ export default function ArticleSummary({ article, onClose, onBookmark, onShare }
                 crossOrigin="anonymous"
               />
               {imageLoading && (
-                <div className="absolute inset-0 bg-gray-700 dark:bg-gray-700 bg-gray-300 rounded-lg flex items-center justify-center">
+                <div className={`absolute inset-0 rounded-lg flex items-center justify-center ${
+                  isDarkMode ? 'bg-gray-700' : 'bg-gray-300'
+                }`}>
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
                 </div>
               )}
@@ -185,14 +219,20 @@ export default function ArticleSummary({ article, onClose, onBookmark, onShare }
               )}
             </div>
           ) : (
-            <div className="w-full h-64 bg-gray-700 dark:bg-gray-700 bg-gray-200 rounded-lg flex items-center justify-center">
+            <div className={`w-full h-64 rounded-lg flex items-center justify-center ${
+              isDarkMode ? 'bg-gray-700' : 'bg-gray-200'
+            }`}>
               <div className="text-center">
-                <FaImage className="text-gray-500 dark:text-gray-500 text-gray-400 text-6xl mx-auto mb-4" />
-                <p className="text-gray-500 dark:text-gray-500 text-gray-400 text-lg">No image available</p>
+                <FaImage className={`text-6xl mx-auto mb-4 ${
+                  isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                }`} />
+                <p className={`text-lg ${
+                  isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                }`}>No image available</p>
                 {hasVideo && (
                   <div className="mt-4 flex items-center justify-center gap-2">
-                    <FaPlay className="text-red-500 dark:text-red-500 text-lg" />
-                    <span className="text-red-500 dark:text-red-500 text-red-600 font-medium">Video content available</span>
+                    <FaPlay className="text-red-500 text-lg" />
+                    <span className="text-red-500 font-medium">Video content available</span>
                   </div>
                 )}
               </div>
@@ -202,10 +242,14 @@ export default function ArticleSummary({ article, onClose, onBookmark, onShare }
 
         {/* AI Summary */}
         <div className="px-6 py-4">
-          <div className="bg-gray-800 dark:bg-gray-800 bg-gray-100 rounded-lg p-6">
+          <div className={`rounded-lg p-6 ${
+            isDarkMode ? 'bg-gray-800' : 'bg-gray-100'
+          }`}>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-cyan-400 text-lg">⚡</span>
-              <h3 className="text-white dark:text-white text-gray-900 font-bold">AI Summary</h3>
+              <h3 className={`font-bold ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>AI Summary</h3>
               {hasVideo && (
                 <span className="ml-2 px-2 py-1 bg-red-500 text-white text-xs rounded-full flex items-center gap-1">
                   <FaPlay className="text-xs" />
@@ -213,14 +257,18 @@ export default function ArticleSummary({ article, onClose, onBookmark, onShare }
                 </span>
               )}
             </div>
-            <div className="text-gray-300 dark:text-gray-300 text-gray-700 leading-relaxed">
+            <div className={`leading-relaxed ${
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}>
               {article.summary || article.description || 'No summary available. This article discusses important developments in the field, providing insights and analysis on current trends and future implications.'}
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="px-6 py-4 border-t border-gray-700 dark:border-gray-700 border-gray-200">
+        <div className={`px-6 py-4 border-t ${
+          isDarkMode ? 'border-gray-700' : 'border-gray-200'
+        }`}>
           <div className="flex items-center justify-between">
             <button
               onClick={handleReadOriginal}
@@ -230,11 +278,15 @@ export default function ArticleSummary({ article, onClose, onBookmark, onShare }
               <FaExternalLinkAlt className="text-sm" />
               {hasVideo ? 'Watch Original Video' : 'Read Original Article'}
             </button>
-            <div className="flex items-center gap-4 text-gray-400 dark:text-gray-400 text-gray-600">
-              <span className="text-sm">Last updated: {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : 'Unknown'}</span>
-              <div className="flex items-center gap-1 bg-gray-800 dark:bg-gray-800 bg-gray-200 px-3 py-1 rounded">
+            <div className={`flex items-center gap-4 text-sm ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>
+              <span>Last updated: {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : 'Unknown'}</span>
+              <div className={`flex items-center gap-1 px-3 py-1 rounded ${
+                isDarkMode ? 'bg-gray-800' : 'bg-gray-200'
+              }`}>
                 <FaThumbsUp className="text-sm" />
-                <span className="text-sm">342</span>
+                <span>342</span>
               </div>
             </div>
           </div>

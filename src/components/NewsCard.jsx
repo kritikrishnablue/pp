@@ -255,34 +255,37 @@ export default function NewsCard({ article, onLike, onBookmark, onShare, showSta
           {/* Bookmark Button */}
           <motion.button
             onClick={handleBookmark}
-            className="absolute top-3 right-3 p-2 backdrop-blur-sm rounded-full transition-all duration-300"
+            className={`absolute top-3 right-3 p-2 backdrop-blur-sm rounded-full transition-all duration-300 ${
+              isDarkMode 
+                ? 'bg-black/60 hover:bg-black/80' 
+                : 'bg-white/80 hover:bg-white/95'
+            }`}
             style={{ 
-              backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.8)',
               backdropFilter: 'blur(8px)'
             }}
-            whileTap={{ scale: 1.4, rotate: 25 }}
-            whileHover={{ scale: 1.15, rotate: 5 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.1, y: -2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
             aria-label="Bookmark"
           >
             <AnimatePresence initial={false} mode="wait">
               {isBookmarked ? (
                 <motion.span
                   key="bookmarked"
-                  initial={{ scale: 0.5, rotate: -45, opacity: 0 }}
-                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                  exit={{ scale: 0.5, rotate: 45, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
                 >
                   <FaBookmark className="text-sm" style={{ color: isDarkMode ? '#0ea5e9' : '#06b6d4' }} />
                 </motion.span>
               ) : (
                 <motion.span
                   key="not-bookmarked"
-                  initial={{ scale: 0.5, rotate: 45, opacity: 0 }}
-                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                  exit={{ scale: 0.5, rotate: -45, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
                 >
                   <FaBookmark className="text-sm" style={{ color: isDarkMode ? '#64748b' : '#94a3b8' }} />
                 </motion.span>
